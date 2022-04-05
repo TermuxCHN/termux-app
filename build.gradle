@@ -19,3 +19,47 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+    def remoteUrl = "https://hub.fastgit.xyz/termuxchn/termux-packages/releases/download/bootstrap-" + version + "/bootstrap-" + arch + ".zip"
+    logger.quiet("Downloading " + remoteUrl + " ...")
+
+    file.parentFile.mkdirs()
+    def out = new BufferedOutputStream(new FileOutputStream(file))
+
+    def connection = new URL(remoteUrl).openConnection()
+    connection.setInstanceFollowRedirects(true)
+    def digestStream = new java.security.DigestInputStream(connection.inputStream, digest)
+    out << digestStream
+    out.close()
+
+    def checksum = new BigInteger(1, digest.digest()).toString(16)
+    while (checksum.length() < 64) { checksum = "0" + checksum }
+    if (checksum != expectedChecksum) {
+        file.delete()
+        throw new GradleException("Wrong checksum for " + remoteUrl + ": expected: " + expectedChecksum + ", actual: " + checksum)
+    }
+}
+
+clean {
+    doLast {
+        def tree = fileTree(new File(projectDir, 'src/main/cpp'))
+        tree.include 'bootstrap-*.zip'
+        tree.each { it.delete() }
+    }
+}
+
+task downloadBootstraps() {
+    doLast {
+        def version = "2022.04.05-r1"
+        downloadBootstrap("aarch64", "4490690d32b158973c9890a9bca176e24d39714374506dcf3433afd6d82f9654", version)
+        downloadBootstrap("arm",     "3a1a6fa75a474dcf2bbc48918624dcd5a5844a58850424386354ed91de60f38f", version)
+        downloadBootstrap("i686",    "e104907b9bb5c64e4926691634e43996e8bcaf53d7b8b21d7821d184d0eb33b8", version)
+        downloadBootstrap("x86_64",  "394250dad1f0b5bfbfd2447fdde9d9ef2e3c7fbac5a6cc5775e2650c80032d46", version)
+    }
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.javaCompileProvider.get().dependsOn(downloadBootstraps)
+    }
+}
