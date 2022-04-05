@@ -1,9 +1,9 @@
 name: Attach Debug APKs To Release
 
 on:
-  release:
-    types:
-      - published
+  push:
+  label:
+      types: edited
 
 jobs:
   attach-apks:
