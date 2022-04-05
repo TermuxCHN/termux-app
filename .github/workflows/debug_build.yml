@@ -2,7 +2,9 @@ name: Build
 
 on:
   push:
-    branches:
+  label:
+      types: edited
+      branches:
       - master
   pull_request:
     branches:
