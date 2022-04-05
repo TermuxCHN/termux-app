@@ -166,7 +166,7 @@ def downloadBootstrap(String arch, String expectedChecksum, String version) {
         }
     }
 
-    def remoteUrl = "https://hub.fastgit.xyz/termuxchn/termux-packages/releases/download/bootstrap-" + version + "/bootstrap-" + arch + ".zip"
+    def remoteUrl = "https://github.com/termuxchn/termux-packages/releases/download/bootstrap-" + version + "/bootstrap-" + arch + ".zip"
     logger.quiet("Downloading " + remoteUrl + " ...")
 
     file.parentFile.mkdirs()
@@ -196,7 +196,7 @@ clean {
 
 task downloadBootstraps() {
     doLast {
-        def version = "2022.01.07-r1"
+        def version = "2022.04.05-r2"
         downloadBootstrap("aarch64", "7afc1efec4143f2e10d7b113d25b2e9057ec0f38b70c2d8034d57ccfd568a602", version)
         downloadBootstrap("arm",     "fd9a2e974bab0c3a0bccb7f2d6da3cd73c184717ea70c752dd1207e396ad6e4c", version)
         downloadBootstrap("i686",    "2b229b9e8e842d82183044a43ab85286871349c4f45f7e358b09a43256b81f5a", version)
