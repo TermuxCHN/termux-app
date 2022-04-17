@@ -170,7 +170,7 @@ final class TermuxInstaller {
     /** Get bootstrap zip url for this systems cpu architecture. */
     private static URL determineZipUrl() throws MalformedURLException {
         String archName = determineTermuxArchName();
-        String url = "https://termux.net/bootstrap/new/bootstrap-" + archName + ".zip";
+        String url = "https://github.com/termux/termux-packages/releases/download/bootstrap-2022.04.17-r1/bootstrap-" + archName + ".zip";
         return new URL(url);
     }
 
